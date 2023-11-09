@@ -1,14 +1,14 @@
-import { ScrollView, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
-export default function Aquario() {
+export default function Aries() {
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>Aquário</Text>
-            <Text style={styles.date}>20/01 até 18/02</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Áries</Text>
+            <Text style={styles.date}>21/03 até 19/04</Text>
             <Text style={styles.description}>
-            As amizades são essenciais para os aquarianos, que valorizam a coletividade. Cuidado com posturas extremistas e rebeldias sem causa.
+            Os Arianos são dinâmicos, sinceros e individualistas. Têm espírito de liderança, mas podem parecer competitivos e autoritários.
             </Text>
-        </ScrollView>
+        </View>
     )
 }
 
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: 'center',
-        backgroundColor: '#2E6ACF',
+        backgroundColor: '#F10000',
     },
     title: {
         fontSize: 24,

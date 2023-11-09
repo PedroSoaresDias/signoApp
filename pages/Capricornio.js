@@ -1,14 +1,14 @@
-import { ScrollView, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
-export default function Aquario() {
+export default function Capricornio() {
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>Aquário</Text>
-            <Text style={styles.date}>20/01 até 18/02</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Capricórnio</Text>
+            <Text style={styles.date}>22/12 até 19/01</Text>
             <Text style={styles.description}>
-            As amizades são essenciais para os aquarianos, que valorizam a coletividade. Cuidado com posturas extremistas e rebeldias sem causa.
+            Pacientes e disciplinados, os capricornianos buscam sucesso através da persistência. Devem cuidar do foco excessivo no materialismo e do pessimismo.
             </Text>
-        </ScrollView>
+        </View>
     )
 }
 
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: 'center',
-        backgroundColor: '#2E6ACF',
+        backgroundColor: '#9A00E1',
     },
     title: {
         fontSize: 24,
