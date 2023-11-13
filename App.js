@@ -1,10 +1,19 @@
 import { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function App() {
   const [nome, setNome] = useState("");
-  const [dataNascimento, setDataNascimento] = useState(new Date);
+  const [dataNascimento, setDataNascimento] = useState("");
+
+  const handleDateChange = (input) => {
+    const dateArray = input.split('/');
+    const day = parseInt(dateArray[0], 10);
+    const month = parseInt(dateArray[1], 10);
+
+    if ((day > 0 && day <= 31) && (month > 0 && month <= 12)) {
+      setDataNascimento(input);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -17,15 +26,11 @@ export default function App() {
           onChangeText={text => setNome(text)}
           placeholder="Nome" />
         <Text style={styles.label}>Digite sua data de nascimento</Text>
-        <DateTimePicker
+        <TextInput
           style={styles.input}
           value={dataNascimento}
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || date;
-            setDataNascimento(currentDate);
-          }}
-          mode='date'
-          display="inline"
+          onChangeText={handleDateChange}
+          placeholder='Ex: 29/01'
         />
         <TouchableOpacity style={styles.btn} onPress={getSign(dataNascimento)}><Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>Pesquisar o Signo</Text></TouchableOpacity>
         {dataNascimento !== "" && (
@@ -37,8 +42,9 @@ export default function App() {
 }
 
 function getSign(date) {
-  const dia = date.getDate();
-  const mes = date.getMonth() + 1;
+  const dateArray = date.split('/')
+  const dia = parseInt(dateArray[0], 10);
+  const mes = parseInt(dateArray[1], 10);
 
   if ((mes == 1 && dia >= 20) || (mes == 2 && dia <= 18)) {
     return "Aquário";
@@ -98,8 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F0F0',
   },
   btn: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    padding: 10,
     color: "#000",
     borderRadius: 20,
     backgroundColor: '#D9D9D9',
