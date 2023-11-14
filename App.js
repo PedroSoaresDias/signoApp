@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { getSign } from './SignList/zodiacUtils';
 
 // Páginas
 import Aquario from './pages/Aquario';
@@ -11,11 +12,15 @@ import Gemeos from './pages/Gemeos';
 import Aries from './pages/Aries';
 import Cancer from './pages/Cancer';
 import Touro from './pages/Touro';
+import Virgem from './pages/Virgem';
+import Escorpiao from './pages/Escorpiao';
+import Capricornio from './pages/Capricornio';
+import Peixes from './pages/Peixes';
+import Sagitario from './pages/Sagitario';
 
 function HomeScreen({ navigation }) {
   const [nome, setNome] = useState("");
   const [inputDate, setInputDate] = useState("");
-  // const [signo, setSigno] = useState("Desconhecido");
 
   function isValidDate(input) {
     if (!input || input.trim() === "") return false;
@@ -35,7 +40,7 @@ function HomeScreen({ navigation }) {
         setInputDate(formattedDate);
         const sign = getSign(formattedDate);
         if (sign !== "Desconhecido") {
-          navigation.navigate(sign);
+          navigation.navigate(sign, {sign});
         }
       }
     } else {
@@ -84,90 +89,14 @@ export default function App() {
         <Stack.Screen options={{ headerShown: true }} name="Aries" component={Aries} />
         <Stack.Screen options={{ headerShown: true }} name="Cancer" component={Cancer} />
         <Stack.Screen options={{ headerShown: true }} name="Touro" component={Touro} />
+        <Stack.Screen options={{ headerShown: true }} name='Virgem' component={Virgem} />
+        <Stack.Screen options={{ headerShown: true }} name='Peixes' component={Peixes} />
+        <Stack.Screen options={{ headerShown: true }} name='Capricornio' component={Capricornio} />
+        <Stack.Screen options={{ headerShown: true }} name='Escorpiao' component={Escorpiao} />
+        <Stack.Screen options={{ headerShown: true }} name='Sagitario' component={Sagitario} />
       </Stack.Navigator>
     </NavigationContainer>
   )
-
-  // const [nome, setNome] = useState("");
-  // const [inputDate, setInputDate] = useState("");
-  // const [signo, setSigno] = useState("Desconhecido");
-
-  // function isValidDate(input) {
-  //   if (!input || input.trim() === "") return false;
-
-  //   const dateArray = input.split('/');
-  //   const day = parseInt(dateArray[0], 10);
-  //   const month = parseInt(dateArray[1], 10);
-  
-  //   return (day > 0 && day <= 31) && (month > 0 && month <= 12);
-  // }
-
-  // const handleDateChange = (input) => {
-  //   if (input.length === 5) {
-  //     const formattedDate = input.replace("/[^0-9]/g", '').replace("/(\d{2})(\d{2})/", '$1/$2');
-  
-  //     if (isValidDate(formattedDate)) {
-  //       setInputDate(formattedDate);
-  //       setSigno(getSign(formattedDate));
-  //     }
-  //   } else {
-  //     setInputDate(input)
-  //   }
-  // }
-
-  // return (
-  //   <View style={styles.container}>
-  //     <Text style={styles.logo}>Signo App</Text>
-  //     <View>
-  //       <Text style={styles.label}>Digite seu nome</Text>
-  //       <TextInput
-  //         style={styles.input}
-  //         value={nome}
-  //         onChangeText={text => setNome(text)}
-  //         placeholder="Nome" />
-  //       <Text style={styles.label}>Digite sua data de nascimento</Text>
-  //       <TextInput
-  //         style={styles.input}
-  //         value={inputDate}
-  //         onChangeText={(text) => setInputDate(text)}
-  //         placeholder='Ex: 29/01'
-  //         maxLength={5}
-  //       />
-  //       <TouchableOpacity style={styles.btn} onPress={() => handleDateChange(inputDate)}><Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>Pesquisar o Signo</Text></TouchableOpacity>
-  //       {inputDate !== "" && (
-  //         <Text>Seu signo é de {signo}</Text>
-  //       )}
-  //     </View>
-  //   </View>
-  // );
-}
-
-function getSign(date) {
-  const dateArray = date.split('/')
-  const dia = parseInt(dateArray[0], 10);
-  const mes = parseInt(dateArray[1], 10);
-
-  const zodiacSigns = [
-    { sign: 'Aquario', start: { month: 1, day: 20 }, end: { month: 2, day: 18 } },
-    { sign: 'Peixes', start: { month: 2, day: 19 }, end: { month: 3, day: 20 } },
-    { sign: 'Aries', start: { month: 3, day: 21 }, end: { month: 4, day: 19 } },
-    { sign: 'Touro', start: { month: 4, day: 20 }, end: { month: 5, day: 20 } },
-    { sign: 'Gemeos', start: { month: 5, day: 21 }, end: { month: 6, day: 20 } },
-    { sign: 'Cancer', start: { month: 6, day: 21 }, end: { month: 7, day: 22 } },
-    { sign: 'Leao', start: { month: 7, day: 23 }, end: { month: 8, day: 22 } },
-    { sign: 'Virgem', start: { month: 8, day: 23 }, end: { month: 9, day: 22 } },
-    { sign: 'Libra', start: { month: 9, day: 23 }, end: { month: 10, day: 22 } },
-    { sign: 'Escorpiao', start: { month: 10, day: 23 }, end: { month: 11, day: 21 } },
-    { sign: 'Sagitario', start: { month: 11, day: 22 }, end: { month: 12, day: 21 } },
-    { sign: 'Capricornio', start: { month: 12, day: 22 }, end: { month: 1, day: 19} },
-  ]
-
-  const sign = zodiacSigns.find(sign =>
-    (mes === sign.start.month && dia >= sign.start.day) ||
-    (mes === sign.end.month && dia <= sign.end.day)
-  );
-
-  return sign ? sign.sign : "Desconhecido";
 }
 
 const styles = StyleSheet.create({
