@@ -3,15 +3,29 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 
 export default function App() {
   const [nome, setNome] = useState("");
-  const [dataNascimento, setDataNascimento] = useState("");
+  const [inputDate, setInputDate] = useState("");
+  const [signo, setSigno] = useState("Desconhecido");
 
-  const handleDateChange = (input) => {
+  function isValidDate(input) {
+    if (!input || input.trim() === "") return false;
+
     const dateArray = input.split('/');
     const day = parseInt(dateArray[0], 10);
     const month = parseInt(dateArray[1], 10);
+  
+    return (day > 0 && day <= 31) && (month > 0 && month <= 12);
+  }
 
-    if ((day > 0 && day <= 31) && (month > 0 && month <= 12)) {
-      setDataNascimento(input);
+  const handleDateChange = (input) => {
+    if (input.length === 5) {
+      const formattedDate = input.replace("/[^0-9]/g", '').replace("/(\d{2})(\d{2})/", '$1/$2');
+  
+      if (isValidDate(formattedDate)) {
+        setInputDate(formattedDate);
+        setSigno(getSign(formattedDate));
+      }
+    } else {
+      setInputDate(input)
     }
   }
 
@@ -28,13 +42,14 @@ export default function App() {
         <Text style={styles.label}>Digite sua data de nascimento</Text>
         <TextInput
           style={styles.input}
-          value={dataNascimento}
-          onChangeText={handleDateChange}
+          value={inputDate}
+          onChangeText={(text) => setInputDate(text)}
           placeholder='Ex: 29/01'
+          maxLength={5}
         />
-        <TouchableOpacity style={styles.btn} onPress={getSign(dataNascimento)}><Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>Pesquisar o Signo</Text></TouchableOpacity>
-        {dataNascimento !== "" && (
-          <Text>Seu signo é de {getSign(dataNascimento)}</Text>
+        <TouchableOpacity style={styles.btn} onPress={() => handleDateChange(inputDate)}><Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>Pesquisar o Signo</Text></TouchableOpacity>
+        {inputDate !== "" && (
+          <Text>Seu signo é de {signo}</Text>
         )}
       </View>
     </View>
@@ -46,33 +61,27 @@ function getSign(date) {
   const dia = parseInt(dateArray[0], 10);
   const mes = parseInt(dateArray[1], 10);
 
-  if ((mes == 1 && dia >= 20) || (mes == 2 && dia <= 18)) {
-    return "Aquário";
-  } else if ((mes == 2 && dia >= 19) || (mes == 3 && dia <= 20)) {
-    return "Peixes";
-  } else if ((mes == 3 && dia >= 21) || (mes == 4 && dia <= 19)) {
-    return "Áries";
-  } else if ((mes == 4 && dia >= 20) || (mes == 5 && dia <= 20)) {
-    return 'Touro';
-  } else if ((mes == 5 && dia >= 21) || (mes == 6 && dia <= 20)) {
-    return 'Gêmeos';
-  } else if ((mes == 6 && dia >= 21) || (mes == 7 && dia <= 22)) {
-    return 'Câncer';
-  } else if ((mes == 7 && dia >= 23) || (mes == 8 && dia <= 22)) {
-    return 'Leão';
-  } else if ((mes == 8 && dia >= 23) || (mes == 9 && dia <= 22)) {
-    return 'Virgem';
-  } else if ((mes == 9 && dia >= 23) || (mes == 10 && dia <= 22)) {
-    return 'Libra';
-  } else if ((mes == 10 && dia >= 23) || (mes == 11 && dia <= 21)) {
-    return 'Escorpião';
-  } else if ((mes == 11 && dia >= 22) || (mes == 12 && dia <= 21)) {
-    return 'Sagitário';
-  } else if ((mes == 12 && dia >= 22) || (mes == 1 && dia <= 19)) {
-    return 'Capricórnio';
-  } else {
-    return 'Desconhecido';
-  }
+  const zodiacSigns = [
+    { sign: 'Aquário', start: { month: 1, day: 20 }, end: { month: 2, day: 18 } },
+    { sign: 'Peixes', start: { month: 2, day: 19 }, end: { month: 3, day: 20 } },
+    { sign: 'Áries', start: { month: 3, day: 21 }, end: { month: 4, day: 19 } },
+    { sign: 'Touro', start: { month: 4, day: 20 }, end: { month: 5, day: 20 } },
+    { sign: 'Gêmeos', start: { month: 5, day: 21 }, end: { month: 6, day: 20 } },
+    { sign: 'Câncer', start: { month: 6, day: 21 }, end: { month: 7, day: 22 } },
+    { sign: 'Leão', start: { month: 7, day: 23 }, end: { month: 8, day: 22 } },
+    { sign: 'Virgem', start: { month: 8, day: 23 }, end: { month: 9, day: 22 } },
+    { sign: 'Libra', start: { month: 9, day: 23 }, end: { month: 10, day: 22 } },
+    { sign: 'Escorpião', start: { month: 10, day: 23 }, end: { month: 11, day: 21 } },
+    { sign: 'Sagitário', start: { month: 11, day: 22 }, end: { month: 12, day: 21 } },
+    { sign: 'Capricórnio', start: { month: 12, day: 22 }, end: { month: 1, day: 19} },
+  ]
+
+  const sign = zodiacSigns.find(sign =>
+    (mes === sign.start.month && dia >= sign.start.day) ||
+    (mes === sign.end.month && dia <= sign.end.day)
+  );
+
+  return sign ? sign.sign : "Desconhecido";
 }
 
 const styles = StyleSheet.create({
