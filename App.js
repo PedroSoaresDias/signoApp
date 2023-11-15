@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { getSign } from './SignList/zodiacUtils';
 
 // Páginas
 import Aquario from './pages/Aquario';
@@ -20,81 +19,102 @@ import Sagitario from './pages/Sagitario';
 
 function HomeScreen({ navigation }) {
   const [nome, setNome] = useState("");
-  const [inputDate, setInputDate] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
 
-  function isValidDate(input) {
-    if (!input || input.trim() === "") return false;
+  const handlePesquisar = () => {
+    const signo = getSigno(
+      parseInt(dataNascimento.split('/')[0], 10),
+      parseInt(dataNascimento.split('/')[1], 10)
+    );
 
-    const dateArray = input.split('/');
-    const day = parseInt(dateArray[0], 10);
-    const month = parseInt(dateArray[1], 10);
-  
-    return (day > 0 && day <= 31) && (month > 0 && month <= 12);
-  }
+    navigation.navigate(signo, { signoNome: signo, nome: nome });
+  };
 
-  const handleDateChange = (input) => {
-    if (input.length === 5) {
-      const formattedDate = input.replace("/[^0-9]/g", '').replace("/(\d{2})(\d{2})/", '$1/$2');
-  
-      if (isValidDate(formattedDate)) {
-        setInputDate(formattedDate);
-        const sign = getSign(formattedDate);
-        if (sign !== "Desconhecido") {
-          navigation.navigate(sign, {sign});
-        }
-      }
-    } else {
-      setInputDate(input)
+  // importar peixes e sagitario
+  const getSigno = (dia, mes) => {
+    if ((mes === 3 && dia >= 21) || (mes === 4 && dia <= 19)) {
+      return "Aries";
+    } else if ((mes === 4 && dia >= 20) || (mes === 5 && dia <= 20)) {
+      return "Touro";
+    } else if ((mes === 5 && dia >= 21) || (mes === 6 && dia <= 20)) {
+      return "Gemeos";
+    } else if ((mes === 6 && dia >= 21) || (mes === 7 && dia <= 22)) {
+      return "Cancer";
+    } else if ((mes === 7 && dia >= 23) || (mes === 8 && dia <= 22)) {
+      return "Leao";
+    } else if ((mes === 8 && dia >= 23) || (mes === 9 && dia <= 22)) {
+      return "Virgem";
+    } else if ((mes === 9 && dia >= 23) || (mes === 10 && dia <= 22)) {
+      return "Libra";
+    } else if ((mes === 10 && dia >= 23) || (mes === 11 && dia <= 21)) {
+      return "Escorpiao";
+    } else if ((mes === 11 && dia >= 22) || (mes === 12 && dia <= 21)) {
+      return "Sagitario";
+    } else if ((mes === 12 && dia >= 22) || (mes === 1 && dia <= 19)) {
+      return "Capricornio";
+    } else if ((mes === 1 && dia >= 20) || (mes === 2 && dia <= 18)) {
+      return "Aquario";
+    } else if ((mes === 2 && dia >= 19) || (mes === 3 && dia <= 20)) {
+      return "Peixes";
     }
-  }
+
+    return "Signo Desconhecido";
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Signo App</Text>
       <View>
+        <Image
+          source={require('./assets/images/logoSigno.png')} style={styles.logoSigno}
+        />
         <Text style={styles.label}>Digite seu nome</Text>
         <TextInput
           style={styles.input}
+          keyboardType="default"
           value={nome}
           onChangeText={text => setNome(text)}
-          placeholder="Nome" />
+          placeholder="José das Couves"
+        />
+
         <Text style={styles.label}>Digite sua data de nascimento</Text>
         <TextInput
           style={styles.input}
-          value={inputDate}
-          onChangeText={(text) => setInputDate(text)}
-          placeholder='Ex: 29/01'
-          maxLength={5}
+          keyboardType="default"
+          value={dataNascimento}
+          onChangeText={text => setDataNascimento(text)}
+          placeholder="Ex: 19/01"
         />
-        <TouchableOpacity style={styles.btn} onPress={() => handleDateChange(inputDate)}><Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>Pesquisar o Signo</Text></TouchableOpacity>
-        {/* {inputDate !== "" && (
-          <Text>Seu signo é de {signo}</Text>
-        )} */}
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={handlePesquisar}
+        >
+          <Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>Pesquisar Signo</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-const Stack = createNativeStackNavigator();
+const stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeScreen">
-        <Stack.Screen options={{ headerShown: false }} name="Home" component={HomeScreen} />
-        <Stack.Screen options={{ headerShown: true }} name="Aquario" component={Aquario} />
-        <Stack.Screen options={{ headerShown: true }} name="Libra" component={Libra} />
-        <Stack.Screen options={{ headerShown: true }} name="Leao" component={Leao} />
-        <Stack.Screen options={{ headerShown: true }} name="Gemeos" component={Gemeos} />
-        <Stack.Screen options={{ headerShown: true }} name="Aries" component={Aries} />
-        <Stack.Screen options={{ headerShown: true }} name="Cancer" component={Cancer} />
-        <Stack.Screen options={{ headerShown: true }} name="Touro" component={Touro} />
-        <Stack.Screen options={{ headerShown: true }} name='Virgem' component={Virgem} />
-        <Stack.Screen options={{ headerShown: true }} name='Peixes' component={Peixes} />
-        <Stack.Screen options={{ headerShown: true }} name='Capricornio' component={Capricornio} />
-        <Stack.Screen options={{ headerShown: true }} name='Escorpiao' component={Escorpiao} />
-        <Stack.Screen options={{ headerShown: true }} name='Sagitario' component={Sagitario} />
-      </Stack.Navigator>
+      <stack.Navigator initialRouteName="HomeScreen">
+        <stack.Screen name="React Sign" component={HomeScreen} />
+        <stack.Screen name="Aries" component={Aries} />
+        <stack.Screen name="Cancer" component={Cancer} />
+        <stack.Screen name="Touro" component={Touro} />
+        <stack.Screen name="Gemeos" component={Gemeos} />
+        <stack.Screen name="Leao" component={Leao} />
+        <stack.Screen name="Virgem" component={Virgem} />
+        <stack.Screen name="Libra" component={Libra} />
+        <stack.Screen name="Escorpiao" component={Escorpiao} />
+        <stack.Screen name="Capricornio" component={Capricornio} />
+        <stack.Screen name="Aquario" component={Aquario} />
+        <stack.Screen name="Sagitario" component={Sagitario} />
+        <stack.Screen name="Peixes" component={Peixes} />
+      </stack.Navigator>
     </NavigationContainer>
   )
 }
@@ -102,36 +122,43 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#4158FF',
+    color: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   logo: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: 'bold',
     marginTop: 10,
-    color: "#000",
+    color: "#fff",
   },
   label: {
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: 'bold',
     textAlign: 'left',
     marginVertical: 10,
-    color: '#000',
+    color: '#fff',
   },
   input: {
     borderRadius: 20,
     borderStyle: 'solid',
     color: '#000',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
     backgroundColor: '#F0F0F0',
   },
   btn: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
     color: "#000",
-    borderRadius: 20,
-    backgroundColor: '#D9D9D9',
-    marginTop: 18
-  }
+    borderRadius: 24,
+    backgroundColor: '#FDD682',
+    marginTop: 80,
+  },
+  logoSigno: {
+    width: 300,
+    height: 300,
+    marginTop: 10,
+  },
 });
